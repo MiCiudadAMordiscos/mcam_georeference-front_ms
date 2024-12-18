@@ -2,13 +2,17 @@
 import type { Ubicacion } from "@services/fetch_near_restaurants";
 //obtener lista de restaurantes
 import { fetchRestaurants } from "@services/fetch_near_restaurants";
+import { colocarMarcador } from "@components/marcador";
 
-//parámetros iniciales
-let x = 35.652832,
-    y = 139.839478,
+// constantes para el mapa 
+export const 
     zoom = 17,
-    maxZoom = 19,
+    maxZoom = 20,
     timeout = 10000;
+
+// ubicación fija mientras tanto 
+let x = 35.652832,
+    y = 139.839478;
 
 var map = L.map("leaflet", {
     center: [x, y],
@@ -27,19 +31,6 @@ L.tileLayer(`https://tile.openstreetmap.org/{z}/{x}/{y}.png`, {
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
-//colocar pin por latitud y longitud
-function colocarMarcador(latitud: number, longitud: number) {
-    var marker = L.marker([latitud, longitud], {
-        autoPanOnFocus: false,
-    })
-        .addTo(map)
-        .bindPopup("A pretty CSS popup.<br> Easily customizable.");
-    marker.on(
-        "click",
-        (event: any) => map.flyTo(event.target._latlng, maxZoom),
-    );
-}
-
 // PRUEBAS
 let res: Ubicacion[] = [
     { latitud: 35.652832, longitud: 139.839478 }, // Punto original
@@ -55,5 +46,5 @@ let res: Ubicacion[] = [
 ];
 
 for (let loc of res) {
-    colocarMarcador(loc.latitud, loc.longitud);
+    colocarMarcador(map, loc.latitud, loc.longitud);
 }

@@ -1,5 +1,3 @@
-import { error } from "node_modules/astro/dist/core/logger/core";
-
 //url para el post
 const api_gateway_url = "http://localhost:8080";
 
@@ -33,7 +31,10 @@ export async function fetchRestaurants(
     }).then((data: Ubicacion[]) => {
         return data;
     }).catch((error) =>
-        console.error("Algo salió mal enviando la ubicación fetchRestaurants: ", error)
+        console.error(
+            "Algo salió mal enviando la ubicación fetchRestaurants: ",
+            error,
+        )
     );
 }
 

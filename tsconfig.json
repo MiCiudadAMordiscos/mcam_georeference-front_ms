@@ -6,6 +6,7 @@
     "verbatimModuleSyntax": true,
     "baseUrl": ".",
     "paths": {
+      "@services/*": ["src/services/*"],
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"],
       "@assets/*": ["src/assets/*"],

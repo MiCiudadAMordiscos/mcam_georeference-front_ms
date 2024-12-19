@@ -2,16 +2,20 @@
 const api_gateway_url = "http://localhost:8080";
 
 // estructura de la ubicación
-export interface Ubicacion {
+export interface RestaurantPoint {
+    latitud: number;
+    longitud: number;
+    nombre_restaurante: string;
+}
+
+export interface UserPoint {
     latitud: number;
     longitud: number;
 }
 
 export async function fetchRestaurants(
-    latitud: number,
-    longitud: number,
+    coordinates: UserPoint,
 ) {
-    let coordinates: Ubicacion = { latitud: latitud, longitud: longitud };
     return fetch(api_gateway_url, {
         method: "POST",
         headers: {
@@ -28,7 +32,7 @@ export async function fetchRestaurants(
         }
         return res.json();
         //maneja la data
-    }).then((data: Ubicacion[]) => {
+    }).then((data: RestaurantPoint[]) => {
         return data;
     }).catch((error) =>
         console.error(
@@ -39,7 +43,9 @@ export async function fetchRestaurants(
 }
 
 //pruebas
-const location: Ubicacion = {
+const location: UserPoint = {
     latitud: 40.7128,
     longitud: -74,
 };
+
+fetchRestaurants(location);

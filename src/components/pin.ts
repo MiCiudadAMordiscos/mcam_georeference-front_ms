@@ -1,9 +1,9 @@
 import type { RestaurantPoint } from "@services/fetch_near_restaurants";
 
-// zoom al aprimir el marcador
+// zoom al seleccionar el marcador
 const zoom = 18;
 // configuración del marcador
-const mcam_icono = L.icon({
+const mcam_icon = L.icon({
     iconUrl: "src/assets/Icono.svg",
     iconSize: [75, 75],
     // donde se ve el pop up
@@ -11,23 +11,19 @@ const mcam_icono = L.icon({
 });
 
 //colocar pin por latitud y longitud
-export function placePin(
+export function placeRestaurantPin(
     map: any,
     ubicacion_restaurante: RestaurantPoint,
 ) {
-    var marker = L.marker([
-        ubicacion_restaurante.lat,
-        ubicacion_restaurante.lng,
-    ], {
-        autoPanOnFocus: false,
-        icon: mcam_icono,
+    var marker = L.marker(ubicacion_restaurante, {
+        autoPanOnFocus: true,
+        icon: mcam_icon,
         title: ubicacion_restaurante.name,
         riseOnHover: true,
         //alt : 'Un marcador de mi ciudad a mordiscos'
     })
         .addTo(map)
         .bindPopup(ubicacion_restaurante.name);
-    //.openPopup();
     // ir al pin y agrandar el mapa
     marker.on(
         "popupopen",

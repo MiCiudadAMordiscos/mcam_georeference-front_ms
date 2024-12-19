@@ -3,7 +3,7 @@ import {
     type RestaurantPoint,
     type UserPoint,
 } from "@services/fetch_near_restaurants";
-import { placePin } from "@components/pin";
+import { placeRestaurantPin } from "@components/pin";
 
 // constantes para el mapa
 const zoom = 17,
@@ -35,15 +35,14 @@ export function createMap() {
         .on("locationfound", (location: any) => console.log(location))
         .on("locationerror", (err: any) => {
             console.log(err);
-            map.setView(L.latLng(location));
+            //
+            map.setView(location);
             placeNearRestaurants(map, location);
         });
     return map;
 }
 
 function setMapBounds(map: any, places: any) {
-    console.log(places);
-
     //crear los límites del mapa
     const bounds = L.latLngBounds(places);
     // reubicar el mapa a los nuevos límites
@@ -52,11 +51,9 @@ function setMapBounds(map: any, places: any) {
 
 export async function placeNearRestaurants(map: any, location: UserPoint) {
     let res: RestaurantPoint[] = (await fetchRestaurants(location))!;
-    const places = [];
     for (let loc of res) {
-        placePin(map, loc);
+        placeRestaurantPin(map, loc);
         // guardar como como puntos con latitud y longitud
-        places.push(L.latLng(loc));
     }
-    setMapBounds(map, places);
+    setMapBounds(map, res);
 }

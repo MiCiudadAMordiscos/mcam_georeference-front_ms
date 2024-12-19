@@ -1,24 +1,62 @@
-import type { UserPoint } from "@services/fetch_near_restaurants";
+import {
+    fetchRestaurants,
+    type RestaurantPoint,
+    type UserPoint,
+} from "@services/fetch_near_restaurants";
+import { placePin } from "@components/pin";
 
 // constantes para el mapa
-export const zoom = 17,
+const zoom = 17,
+    minZoom = 15,
     maxZoom = 19,
-    timeout = 10000;
+    timeout = 1000;
 
-export function createMap(ubicacion: UserPoint) {
-    let map = L.map("leaflet", {
-        center: [ubicacion.latitud, ubicacion.longitud],
+// ubicación fija mientras tanto
+let x = 4.6097,
+    y = -74.0817;
+
+let location: UserPoint = { lat: x, lng: y };
+
+export function createMap() {
+    const map = L.map("leaflet", {
         zoom: zoom,
+        //center: [location.latitud, location.longitud],
     });
     // dibujar el mapa por encima del leaflet
     L.tileLayer(`https://tile.openstreetmap.org/{z}/{x}/{y}.png`, {
         maxZoom: maxZoom,
+        minZoom: minZoom,
         attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
+    //pedir ubicación, solo funciona con https
+    map.locate({ timeout: timeout })
+        // listeners para la ubicación
+        .on("locationfound", (location: any) => console.log(location))
+        .on("locationerror", (err: any) => {
+            console.log(err);
+            map.setView(L.latLng(location));
+            placeNearRestaurants(map, location);
+        });
     return map;
-    //pedir ubicación, solo funciona por ssh
-    //let user_location = map.locate({ setView: true, timeout: timeout });
-    //manejar error de ubicación
-    //map.on("locationerror", (err: any) => console.log(err));
+}
+
+function setMapBounds(map: any, places: any) {
+    console.log(places);
+
+    //crear los límites del mapa
+    const bounds = L.latLngBounds(places);
+    // reubicar el mapa a los nuevos límites
+    map.flyToBounds(bounds);
+}
+
+export async function placeNearRestaurants(map: any, location: UserPoint) {
+    let res: RestaurantPoint[] = (await fetchRestaurants(location))!;
+    const places = [];
+    for (let loc of res) {
+        placePin(map, loc);
+        // guardar como como puntos con latitud y longitud
+        places.push(L.latLng(loc));
+    }
+    setMapBounds(map, places);
 }

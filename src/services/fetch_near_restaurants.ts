@@ -3,14 +3,14 @@ const api_gateway_url = "http://localhost:8080";
 
 // estructura de la ubicación
 export interface RestaurantPoint {
-    latitud: number;
-    longitud: number;
-    nombre_restaurante: string;
+    lat: number;
+    lng: number;
+    name: string;
 }
 
 export interface UserPoint {
-    latitud: number;
-    longitud: number;
+    lat: number;
+    lng: number;
 }
 
 export async function fetchRestaurants(
@@ -41,11 +41,3 @@ export async function fetchRestaurants(
         )
     );
 }
-
-//pruebas
-const location: UserPoint = {
-    latitud: 40.7128,
-    longitud: -74,
-};
-
-fetchRestaurants(location);
